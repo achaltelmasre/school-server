@@ -22,15 +22,42 @@ app.get('/students', (req, res) => {
 });
 
 app.post('/student', (req, res) => {
-  const {name,age,moblie,email} = req.body;
+  const {name,age,mobile,email} = req.body;
+
+  if (!name) {
+     return res.json({
+      success: false,
+      message: 'Name is required',
+     })
+  }
+  if (!age) {
+    return res.json({
+     success: false,
+     message: 'Age is required',
+    })
+ }
+
+ if (!mobile) {
+  return res.json({
+   success: false,
+   message: 'Mobile is required',
+  })
+}
+
+if (!email) {
+  return res.json({
+   success: false,
+   message: 'Email is required',
+  })
+}
   const id = Math.floor(Math.random() * 100000) + 1;
 
   const newStudent = {
-    'id': id,
-    'name': name,
-    'age': age,
-    'moblie': moblie,
-    'email': email,
+     id,
+    name,
+    age,
+    mobile,
+     email,
   }
 
   students.push(newStudent);
@@ -40,8 +67,33 @@ app.post('/student', (req, res) => {
     data: newStudent,
     message: 'Successfully added new student',
   })
-});
+})
+
+app.get('/student', (req,res)=>{
+  const {id} = req.query;
+
+  let student = null;
+
+  students.forEach((stud)=>{
+    if(stud.id == id){
+      student = stud;
+    }
+  })
+
+  if(student == null){
+    return res.json({
+      success: false,
+      message: 'Student not found',
+    })
+  }
+
+  res.json({
+    success: true,
+    data: student,
+    message: 'Successfully fetched student',
+  })
+})
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log('Server is running on port ${PORT}.');
 });
